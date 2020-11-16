@@ -6,14 +6,11 @@ from Encryption import Encryption
 from MasterKey import check
 from clicks_util import logger
 
-
-
 '''c.execute("""CREATE TABLE passwords(
             name text,
             password text,
             url text
     )""")'''
-
 
 class PasswordManager:
 
@@ -87,6 +84,17 @@ class PasswordManager:
 
             lg.error(e)
 
+    def remove_password(self, name):
+
+        try:
+            text_to_delete = f"DELETE FROM passwords WHERE name='{name}'"
+            self.c.execute(text_to_delete)
+            self.conn.commit()
+
+        except Exception as e:
+
+            lg.error(e)
+
     def write_password(self, name, password, url):
 
         try:
@@ -127,7 +135,7 @@ Your MasterKey was recognised by the database file, please continue
 Your MasterKey was not recognised by the database file
         """)
 
-            raise FalseMasterKey
+            #raise FalseMasterKey
 
         while True:
 
@@ -140,7 +148,7 @@ Your MasterKey was not recognised by the database file
 
                 raise NotEnoughAttributes
 
-            elif action[0] == "r":
+            elif action_list[0] == "r":
 
                 if len(action_list) > 2:
 
@@ -154,7 +162,7 @@ Your MasterKey was not recognised by the database file
                     entries = self.get_all(action_list[1])
                     ui.build_response(entries)
 
-            elif "w":
+            elif action_list[0] == "w":
 
                 if len(action_list) < 3:
 
@@ -175,3 +183,21 @@ Your MasterKey was not recognised by the database file
 
                     raise TooManyAttributes
 
+            elif action_list[0] == "rm":
+
+                try:
+                    if len(action_list) < 2:
+
+                        raise NotEnoughAttributes
+
+                    elif action_list[1] in not_search_terms:
+
+                        raise ForbiddenSearchTermError
+
+                    else:
+                        self.remove_password(action_list[1])
+                        print(f"Removed {action_list[1]} from table")
+
+                except Exception as e:
+
+                    lg.error(e)

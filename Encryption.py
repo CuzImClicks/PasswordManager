@@ -4,6 +4,7 @@ import logging
 import string
 import random
 import os
+import hashlib
 
 lg = logging.getLogger(__name__)
 
@@ -27,20 +28,10 @@ class Encryption:
 
     def encrypt(self, password=""):
 
-        fer = Fernet(self.get_key())
+        sha = hashlib.sha3_256()
+        sha.update(password.encode())
+        return sha.digest()
 
-        encoded = password.encode()
-        encrypted = fer.encrypt(encoded)
 
-        return encrypted
-
-    def decrypt(self, password):
-
-        fer = Fernet(self.get_key())
-
-        decrypted = fer.decrypt(password)
-        decoded = decrypted.decode()
-
-        return decoded
 
 en = Encryption()

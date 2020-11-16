@@ -26,12 +26,21 @@ w <name> <password> <url> - Create an entry and add it to the database
         print("\033[H ")
 
     def build_response(self, entries=[]):
-        from Encryption import Encryption
+        try:
+            from Encryption import Encryption
 
-        en = Encryption()
+            en = Encryption()
 
-        #print(f"{en.decrypt(entries[0])} | {en.decrypt(entries[1])} | {en.decrypt(entries[2])}")
-        print(f"{entries[0]} | {entries[1]} | {entries[2]}")
+            #print(f"{en.decrypt(entries[0])} | {en.decrypt(entries[1])} | {en.decrypt(entries[2])}")
+            print(f"{entries[0]} | {entries[1]} | {entries[2]}")
+            import subprocess
+            import clipboard
+            clipboard.copy(entries[1])
+            print("Password has been copied to your clipboard")
+
+        except TypeError as e:
+
+            pass
 
     def build_start(self):
 
